@@ -69,19 +69,41 @@ z1 = sigmoid(z1);
 z1 = [ones(m,1) z1];
 z1 = z1 * Theta2';
 z1 = sigmoid(z1);
+z1 = ma
+y1k = zeros(m, num_labels);
 
-for i = 1 : num_labels
-	y1 = (y==i);
-	z = z1(:,i);
-	s = -y1' * log(z) - (1-y1)' * log(1-z);
-	J = J + s;
+for i = 1 : m
+  yk(y(i),i) = 1
 end
-J = J/m;	
-p = 2*m;	
+
+z = z1(:,i);
+s = -yk * log(z) - (1-y1) * log(1-z);
+s = sum(s);
+
+J = J + s;
+J = J/m;  
+p = 2*m;  
 e = sum(sum(Theta1(:,2 : size(Theta1,2)).^2));
 e2 = sum(sum(Theta2(:,2 : size(Theta2,2)).^2));
 e = e + e2;
 J = J + (e * lambda/p);
+
+
+for t = 1:m
+  a_1 = x(t,:);
+  z_2 = a_1 * Theta1';
+  a_2 = sigmoid(z_1);
+  a_2 = [1, a_2];
+  z_3 = a_2 * Theta2';
+  a_3 = sigmoid(z_2);
+
+  delta3 = a_2;
+  delta3 = a_2 - yk(1,:);
+  delta2 = (Theta2' * delta3) .*  sigmoidGradient(z_2);
+  
+  Theta2_grad = Theta2_grad + delta3 * a_2';
+  Theta1_grad = Theta1_grad + delta2 * a_1;
+
 
 
 
