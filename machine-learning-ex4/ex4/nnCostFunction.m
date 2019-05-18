@@ -79,7 +79,6 @@ for i = 1 : m
 end
 
 s = -yk .* log(z1') - (1-yk) .* log(1-z1');
- size(s)
 s = sum(sum(s));
 
 J = J + s;
@@ -94,19 +93,24 @@ J = J + (e * lambda/p);
 for t = 1:m
   a_1 = x(t,:);
   z_2 = a_1 * Theta1';
-  a_2 = sigmoid(z_1);
+  a_2 = sigmoid(z_2);
   a_2 = [1, a_2];
   z_3 = a_2 * Theta2';
-  a_3 = sigmoid(z_2);
+  a_3 = sigmoid(z_3);
 
   delta3 = a_3;
-  delta3 = a_3 - yk(t,:);
-  delta2 = (Theta2' * delta3) .*  sigmoidGradient(z_2);
+  delta3 = a_3 - yk(:,t)';
+  delta2 =  delta3 * Theta2;
+  delta2 = delta2(2:end);
+  delta = delta2 .* sigmoidGradient(z_2);
   
-  Theta2_grad = Theta2_grad + delta3 * a_2';
-  Theta1_grad = Theta1_grad + delta2 * a_1;
+  Theta2_grad = Theta2_grad + delta3' * a_2;
+  Theta1_grad = Theta1_grad + delta2' * a_1;
 
+end
 
+Theta2 = Theta2 / m;
+Theta1 = Theta1 / m;
 
 
 
